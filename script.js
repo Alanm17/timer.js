@@ -319,3 +319,22 @@ console.log(Math.floor('-23.9')); // -24 cuts(adds)
 console.log((2.5).toFixed()); // string '3' adds //
 console.log((2.534).toFixed(2)); // string '2.53' takes only 2 decimals //
 console.log((2.59).toFixed(1)); // string '2.5' takes 1 decimal 45.34 -> 45.3// or 45.49 -> 45.5 adds
+
+/// remainder operator and even numbers
+console.log(5 % 2); // 1 rimainder because 5 = 2 * 2 + '1' <- this 1 is reminder
+console.log(8 % 2); // 0  remainders it is an even number even numbers are (0,2,4,6,8,10 and so on) not even nums are (1,3,5,7,9,11 and so on) 2 ga bo'linsa qoldiqsiz 0 chqadigan sonlar juft sonlar deyiladi yani even numbers -> (0,2,4,6,8,10 and so on)
+//taloq sonlar 1,3 lar ozidan qoldiq chqazadi va bu inglizchasiga remainder deyiladi
+
+const isEven = n => n % 2 === 0; // bu boolean qaytaradi false/true
+console.log(isEven(7)); // false
+
+labelBalance.addEventListener('click', function () {
+  [...document.querySelectorAll('.movements__row')].forEach((row, i) => {
+    if (i % 2 == 0) {
+      row.style.backgroundColor = '#BFC9CA';
+    }
+    if (i % 3 == 0) {
+      row.style.backgroundColor = '#85C1E9';
+    }
+  });
+});
