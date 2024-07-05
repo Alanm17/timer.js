@@ -94,7 +94,7 @@ const displayMovements = function (movements, sort = false) {
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-        <div class="movements__value">${mov}€</div>
+        <div class="movements__value">${mov.toFixed(2)}€</div>
       </div>
     `;
 
@@ -104,19 +104,19 @@ const displayMovements = function (movements, sort = false) {
 
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${acc.balance}€`;
+  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
 };
 
 const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${incomes}€`;
+  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
 
   const out = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(out)}€`;
+  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
 
   const interest = acc.movements
     .filter(mov => mov > 0)
@@ -126,7 +126,7 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interest}€`;
+  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
 };
 
 const createUsernames = function (accs) {
@@ -206,7 +206,7 @@ btnTransfer.addEventListener('click', function (e) {
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
 
-  const amount = +inputLoanAmount.value;
+  const amount = Math.floor(inputLoanAmount.value);
 
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
     // Add movement
@@ -278,3 +278,44 @@ console.log(Number.isFinite(23)); // true
 console.log(Number.isFinite('23')); // false
 console.log(Number.isFinite('34px')); // false
 console.log(Number.isFinite(+'m23')); // false
+
+console.log(25 ** (1 / 2)); // square root of 25 is 5
+console.log(Math.sqrt(25)); // 5
+console.log(25 ** (1 / 3)); // cube root of 25 is 2.924
+console.log(Math.max(23, 12, 13, 4, 12, '31', 12, 3)); //output 31. can do parsing
+console.log(Math.max(23, 12, 13, 4, 12, '31px', 12, 3)); //output NaN
+console.log(Math.min(23, 12, 13, 4, 12, '31', 12, 3)); //output 3. can do parsing
+console.log(Math.min(23, 12, 13, 4, 12, '31px', 12, 3)); //output NaN
+
+console.log(Math.PI * Number.parseFloat('10px') ** 2);
+console.log(Math.trunc(Math.random() * 4) + 1);
+//
+//
+const randomNum = function (value) {
+  return Number.isFinite(value) ? Math.trunc(Math.random() * value) + 1 : NaN;
+};
+console.log(randomNum('45'));
+//
+//
+const randomNumb = function (max, min) {
+  return Number.isFinite(max, min)
+    ? Math.trunc(Math.random() * (max - min) + 1) + min
+    : NaN;
+};
+console.log(randomNumb(23, 36));
+
+// rounding integers
+// Math.trunc() removes any decimal number from number like 23.45 -> 23
+// all converts string num to num
+console.log(Math.trunc(23.1)); // 23 cuts
+console.log(Math.floor('25.4')); // 25 cuts
+console.log(Math.ceil(23.1)); // 24 =====================23.1 -> 24 adds
+console.log(Math.ceil('34.4')); // 35 adds
+console.log(Math.floor('27.5')); // 27 cuts
+console.log(Math.floor('-23.9')); // -24 cuts(adds)
+//
+// rounding decimals
+// tofixed method helps us to cut decimal values as we like to and it returns numbers as strings
+console.log((2.5).toFixed()); // string '3' adds //
+console.log((2.534).toFixed(2)); // string '2.53' takes only 2 decimals //
+console.log((2.59).toFixed(1)); // string '2.5' takes 1 decimal 45.34 -> 45.3// or 45.49 -> 45.5 adds
