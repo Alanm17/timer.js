@@ -344,3 +344,32 @@ console.log(2 ** 53 - 1); // biggest num in javaScript 9007199254740991
 // however when we work with API's we will have to deal with so many numbers like above so in ES20 'bigint' method cameout
 
 console.log(23112121212121223432423423432432432423423n); //23112121212121223432423423432432432423423n this is the converted to string using n which is big_int. we can use it when we deal with API
+
+// create a date
+
+const now = new Date();
+console.log(now); // output Sun Jul 07 2024 00:02:51 GMT+0900 (Korean Standard Time) Correct !!
+console.log(new Date('january 1,2024'));
+// javaScript is really smart  parsing out the string
+// but not recommended to do in this way if it is reliable which is creared by javaScript itself it is pretty safe
+
+console.log(new Date(account1.movementsDates[0]));
+console.log(new Date(2024, 11, 25, 6, 45, 10));
+console.log(new Date(0));
+
+const goFuture = new Date(2025, 1, 24, 9, 45, 33);
+console.log(goFuture);
+console.log(goFuture.getFullYear()); //2025
+console.log(goFuture.getMonth()); //1 which feb as 0 = jan
+console.log(goFuture.getDate());
+console.log(goFuture.getHours());
+console.log(goFuture.getMinutes());
+console.log(goFuture.getSeconds());
+console.log(goFuture.toDateString()); //Mon Feb 24 2025
+console.log(goFuture.toISOString()); //2025-02-24T00:45:33.000Z
+console.log(goFuture.getTime()); // time passed since 2024,00:00 is 1740357933000 now
+console.log(new Date(232323232323)); //Sun Feb 23 2025 09:45:33 GMT+0900 (Korean Standard Time) // we can use it to assign some functions to start when it is this date
+console.log(goFuture.setDate(23)); // mutates // changes Sun Feb 'before 24/ after 23 '2025 09:45:33 GMT+0900 (Korean Standard Time)
+console.log(goFuture);
+
+console.log(Date.now());
