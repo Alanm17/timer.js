@@ -8,7 +8,7 @@
 // Data
 
 // DIFFERENT DATA! Contains movement dates, currency and locale
-
+console.log(new Date().toISOString());
 const account1 = {
   owner: 'Muhammadaziz Xoldarov',
   movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
@@ -21,12 +21,12 @@ const account1 = {
     '2020-01-28T09:15:04.904Z',
     '2020-04-01T10:17:24.185Z',
     '2020-05-08T14:11:59.604Z',
-    '2020-05-27T17:01:17.194Z',
-    '2020-07-11T23:36:17.929Z',
-    '2020-07-12T10:51:36.790Z',
+    '2024-07-06T05:54:48.006Z',
+    '2024-07-07T05:54:48.006Z',
+    '2024-07-08T01:51:36.790Z',
   ],
-  currency: 'EUR',
-  locale: 'pt-PT', // de-DE
+  currency: 'UZS',
+  locale: 'uz-UZ', // de-DE
 };
 
 const account2 = {
@@ -45,8 +45,8 @@ const account2 = {
     '2020-06-25T18:49:59.371Z',
     '2020-07-26T12:01:20.894Z',
   ],
-  currency: 'USD',
-  locale: 'en-US',
+  currency: 'TRY',
+  locale: 'tr-TR',
 };
 
 const accounts = [account1, account2];
@@ -80,7 +80,30 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////
 // Functions
+const fomratMovementsDate = function (date, locale) {
+  const daysPassedCalc = (data1, data2) =>
+    Math.round(Math.abs((data2 - data1) / (1000 * 60 * 60 * 24)));
+  const daysPassed = daysPassedCalc(new Date(), date);
+  console.log(daysPassed);
+  const hour = `${date.getHours()}`.padStart(2, '0');
+  const min = `${date.getMinutes()}`.padStart(2, '0');
+  if (daysPassed == 0) return `Today ${hour}:${min}`;
+  if (daysPassed == 1) return `Yesterday ${hour}:${min}`;
+  if (daysPassed <= 7) return `${daysPassed} days ago ${hour}:${min}`;
 
+  // const day = `${date.getDate()}`.padStart(2, '0');
+  // const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  // const year = date.getFullYear();
+  // return `${day}/${month}/${year}, ${hour}:${min}`;
+  return new Intl.DateTimeFormat(locale).format(date);
+};
+
+const formatCur = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+};
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
 
@@ -91,19 +114,15 @@ const displayMovements = function (acc, sort = false) {
   movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const date = new Date(acc.movementsDates[i]);
-    const day = `${date.getDate()}`.padStart(2, '0');
-    const month = `${date.getMonth() + 1}`.padStart(2, '0');
-    const year = date.getFullYear();
-    const hour = `${date.getHours()}`.padStart(2, '0');
-    const min = `${date.getMinutes()}`.padStart(2, '0');
-    const displayTheDate = `${day}/${month}/${year}, ${hour}:${min}`;
+    const displayTheDate = fomratMovementsDate(date, acc.locale);
+    const fortmattedMov = formatCur(mov, acc.locale, acc.currency);
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
         <div class="movements__date">${displayTheDate}</div>
-        <div class="movements__value">${mov.toFixed(2)}€</div>
+        <div class="movements__value">${fortmattedMov}</div>
       </div>
     `;
 
@@ -113,19 +132,20 @@ const displayMovements = function (acc, sort = false) {
 
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
+
+  labelBalance.textContent = formatCur(acc.balance, acc.locale, acc.currency);
 };
 
 const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
+  labelSumIn.textContent = formatCur(incomes, acc.locale, acc.currency);
 
   const out = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
+  labelSumOut.textContent = formatCur(Math.abs(out), acc.locale, acc.currency);
 
   const interest = acc.movements
     .filter(mov => mov > 0)
@@ -135,7 +155,7 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+  labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);
 };
 
 const createUsernames = function (accs) {
@@ -160,6 +180,8 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc);
 };
 
+const loss = navigator.mediaDevices;
+console.log(loss);
 ///////////////////////////////////////
 // Event handlers
 let currentAccount;
@@ -167,7 +189,24 @@ let currentAccount;
 currentAccount = account1;
 updateUI(currentAccount);
 containerApp.style.opacity = 100;
+// experemneting with API
+const locale = navigator.language;
+const nov = new Date();
+const options = {
+  minute: 'numeric',
+  hour: 'numeric',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric', // 2-digit // 20
+  weekday: 'long',
+};
+labelDate.textContent = new Intl.DateTimeFormat(locale, options).format(nov);
 
+//
+//
+//
+//
+//
 btnLogin.addEventListener('click', function (e) {
   // Prevent form from submitting
   e.preventDefault();
@@ -184,13 +223,21 @@ btnLogin.addEventListener('click', function (e) {
     }`;
     containerApp.style.opacity = 100;
     // current date
-    const timeNow = new Date();
-    const date = `${timeNow.getDate()}`.padStart(2, '0');
-    const month = `${timeNow.getMonth() + 1}`.padStart(2, '0');
-    const year = timeNow.getFullYear();
-    const hour = `${timeNow.getHours()}`.padStart(2, '0');
-    const min = `${timeNow.getMinutes()}`.padStart(2, '0');
-    labelDate.textContent = `${date}/${month}/${year}, ${hour}:${min}`;
+
+    const now = new Date();
+    const options = {
+      minute: 'numeric',
+      hour: 'numeric',
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric', // 2-digit // 20
+      // weekday: 'long',
+    };
+    // const locale = navigator.language;
+    labelDate.textContent = new Intl.DateTimeFormat(
+      currentAccount.locale,
+      options
+    ).format(now);
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
@@ -339,7 +386,7 @@ console.log(Math.floor('-23.9')); // -24 cuts(adds)
 // tofixed method helps us to cut decimal values as we like to and it returns numbers as strings
 console.log((2.5).toFixed()); // string '3' adds //
 console.log((2.534).toFixed(2)); // string '2.53' takes only 2 decimals //
-console.log((2.59).toFixed(1)); // string '2.5' takes 1 decimal 45.34 -> 45.3// or 45.49 -> 45.5 adds
+console.log((2.59).toFixed(1)); // string '2.6' takes 1 decimal 45.34 -> 45.3// or 45.49 -> 45.5 adds
 
 /// remainder operator and even numbers
 console.log(5 % 2); // 1 rimainder because 5 = 2 * 2 + '1' <- this 1 is reminder
@@ -390,7 +437,25 @@ console.log(goFuture.toDateString()); //Mon Feb 24 2025
 console.log(goFuture.toISOString()); //2025-02-24T00:45:33.000Z
 console.log(goFuture.getTime()); // time passed since 2024,00:00 is 1740357933000 now
 console.log(new Date(232323232323)); //Sun Feb 23 2025 09:45:33 GMT+0900 (Korean Standard Time) // we can use it to assign some functions to start when it is this date
-console.log(goFuture.setDate(23)); // mutates // changes Sun Feb 'before 24/ after 23 '2025 09:45:33 GMT+0900 (Korean Standard Time)
-console.log(goFuture);
+// console.log(goFuture.setDate(23)); // mutates // changes Sun Feb 'before 24/ after 23 '2025 09:45:33 GMT+0900 (Korean Standard Time)
+// console.log(goFuture);
 
-console.log(Date.now());
+// console.log(Date.now());
+const future = new Date(2025, 1, 24, 9, 45, 33);
+console.log(+future);
+const daysPassedCalc = (data1, data2) =>
+  Math.round((data2 - data1) / (1000 * 60 * 60 * 24));
+
+console.log(
+  daysPassedCalc(new Date(2025, 1, 4, 6, 10), new Date(2025, 1, 1, 2, 5))
+);
+console.log(Math.round(23.8));
+console.log((2.59).toFixed(1));
+const num = 10012311.34;
+const optionss = {
+  style: 'currency',
+  // unit: 'minute',
+  currency: 'USD',
+};
+
+console.log('US    ', new Intl.NumberFormat('en-US', optionss).format(num));
