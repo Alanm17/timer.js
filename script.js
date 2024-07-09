@@ -261,13 +261,15 @@ btnTransfer.addEventListener('click', function (e) {
     currentAccount.balance >= amount &&
     receiverAcc?.username !== currentAccount.username
   ) {
-    // Doing the transfer
-    currentAccount.movements.push(-amount);
-    receiverAcc.movements.push(amount);
-    currentAccount.movementsDates.push(new Date().toISOString());
-    receiverAcc.movementsDates.push(new Date().toISOString());
-    // Update UI
-    updateUI(currentAccount);
+    setTimeout(function () {
+      // Doing the transfer
+      currentAccount.movements.push(-amount);
+      receiverAcc.movements.push(amount);
+      currentAccount.movementsDates.push(new Date().toISOString());
+      receiverAcc.movementsDates.push(new Date().toISOString());
+      // Update UI
+      updateUI(currentAccount);
+    }, 3000);
   }
 });
 
@@ -275,14 +277,18 @@ btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
 
   const amount = Math.floor(inputLoanAmount.value);
-
-  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
-    // Add movement
-    currentAccount.movements.push(amount);
-    currentAccount.movementsDates.push(new Date());
-    // Update UI
-    updateUI(currentAccount);
-  }
+  setTimeout(function () {
+    if (
+      amount > 0 &&
+      currentAccount.movements.some(mov => mov >= amount * 0.1)
+    ) {
+      // Add movement
+      currentAccount.movements.push(amount);
+      currentAccount.movementsDates.push(new Date());
+      // Update UI
+      updateUI(currentAccount);
+    }
+  }, 3000);
   inputLoanAmount.value = '';
 });
 
@@ -459,3 +465,12 @@ const optionss = {
 };
 
 console.log('US    ', new Intl.NumberFormat('en-US', optionss).format(num));
+
+setInterval(() => {
+  const time = new Date();
+  const hour = time.getHours();
+  const minute = time.getMinutes();
+  const seconds = `${time.getSeconds()}`.padStart(2, '0');
+  console.log(`${hour}:${minute}:${seconds}`);
+}, 3600000);
+//output // 16:45:54
