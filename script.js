@@ -79,7 +79,32 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////
+// let timer;
 // Functions
+const startTimeOut = function () {
+  let time = 30;
+  const trigger = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, '0');
+    const sec = `${time % 60}`.padStart(2, '0');
+    labelTimer.textContent = `${min}:${sec}`;
+
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = `Log in to get started`;
+      containerApp.style.opacity = 0;
+    }
+    time--;
+  };
+  trigger();
+  timer = setInterval(trigger, 1000); // here we are using the timer which is in global scope down above loginfunc
+  return timer;
+};
+// restarting the logout time
+const checktime = function () {
+  if (timer) clearInterval(timer); /// here we are checking if timer exists or not if yes clearInterval func removes the timer and right after that here below ↓ we are restarting timer with timer = starttimeOut as java script read codes from top to down
+  timer = startTimeOut();
+};
+document.querySelector('body').addEventListener('click', checktime);
 const fomratMovementsDate = function (date, locale) {
   const daysPassedCalc = (data1, data2) =>
     Math.round(Math.abs((data2 - data1) / (1000 * 60 * 60 * 24)));
@@ -172,7 +197,7 @@ createUsernames(accounts);
 const updateUI = function (acc) {
   // Display movements
   displayMovements(acc);
-
+  // startTimeOut();
   // Display balance
   calcDisplayBalance(acc);
 
@@ -184,11 +209,11 @@ const loss = navigator.mediaDevices;
 console.log(loss);
 ///////////////////////////////////////
 // Event handlers
-let currentAccount;
+let currentAccount, timer;
 // Fake logged in
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = 100;
+// currentAccount = account1;
+// updateUI(currentAccount);
+// containerApp.style.opacity = 100;
 // experemneting with API
 const locale = navigator.language;
 const nov = new Date();
@@ -241,7 +266,8 @@ btnLogin.addEventListener('click', function (e) {
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
-
+    if (timer) clearInterval(timer); /// here we are checking if timer exists or not if yes clearInterval func removes the timer and right after that here below ↓ we are restarting timer with timer = starttimeOut as java script read codes from top to down
+    timer = startTimeOut();
     // Update UI
     updateUI(currentAccount);
   }
