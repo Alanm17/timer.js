@@ -471,7 +471,7 @@ console.log(goFuture.getTime()); // time passed since 2024,00:00 is 174035793300
 console.log(new Date(232323232323)); //Sun Feb 23 2025 09:45:33 GMT+0900 (Korean Standard Time) // we can use it to assign some functions to start when it is this date
 // console.log(goFuture.setDate(23)); // mutates // changes Sun Feb 'before 24/ after 23 '2025 09:45:33 GMT+0900 (Korean Standard Time)
 // console.log(goFuture);
-
+// jhghjhjghjghjghj // no
 // console.log(Date.now());
 const future = new Date(2025, 1, 24, 9, 45, 33);
 console.log(+future);
